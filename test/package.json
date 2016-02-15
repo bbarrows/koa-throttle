@@ -1,0 +1,12 @@
+{
+  "name": "koa-throttle-test",
+  "version": "0.1.0",
+  "description": "Testing Koa Throttle",
+  "main": "test.js",
+  "author": "Bradley Barrows",
+  "license": "MIT",
+  "dependencies": {
+    "co": "^4.6.0",
+    "koa-route": "^2.4.2"
+  }
+}
