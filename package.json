@@ -1,0 +1,31 @@
+{
+  "name": "koa-throttle",
+  "version": "0.1.0",
+  "description": "Koa body response throttling by number of bytes per millisecond",
+  "main": "index.js",
+  "author": "Bradley Barrows",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/bbarrows/koa-throttle.git"
+  },
+  "keywords": [
+    "koa",
+    "middleware",
+    "delay",
+    "sleep",
+    "throttle",
+    "throttling",
+    "rate",
+    "limit",
+    "rate-limit"
+  ],
+  "dependencies": {
+    "co": "^4.6.0",
+    "koa-delay": "0.0.2"
+  },
+  "bugs": {
+    "url": "https://github.com/bbarrows/koa-throttle/issues"
+  },
+  "homepage": "https://github.com/bbarrows/koa-throttle"
+}
