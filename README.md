@@ -32,7 +32,11 @@ app.listen(3000);
 
 ## Testing
 Run:
-```node test.js```
+```cd test; node test.js```
 Then to see the data throttled flow in:
-```curl http://localhost:3000/```
+```
+curl http://localhost:3000/string
+curl http://localhost:3000/buffer
+curl http://localhost:3000/stream 
+```
 
