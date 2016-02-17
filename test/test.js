@@ -15,7 +15,7 @@ app
   }))
   .use(route.get('/stream', function *list() {
     var r = new Readable();
-    r._read = () => { };
+    r._read = function(){ };
     r.push("Start ");
     this.body = r;
     r.push(" BEFORE ");

@@ -5,10 +5,10 @@ var co = require('co');
 
 function streamToString(stream, cb) {
   var all = [];
-  stream.on('data', (c) => {
+  stream.on('data', function(c) {
     all.push(c);
   });
-  stream.on('end', () => {
+  stream.on('end', function() {
     cb(all.join(''));
   });
 }
@@ -34,8 +34,7 @@ module.exports = function (options) {
       // Create a new readable stream which I will write the existing
       // body to. Throttling the response at the specified rate
       var r = new Readable();
-      r._read = () => {
-      };
+      r._read = function() { };
 
       that.body = r;
 
@@ -57,7 +56,7 @@ module.exports = function (options) {
     }
 
     if (originalBody instanceof Stream) {
-      streamToString(originalBody, (s) => {
+      streamToString(originalBody, function(s) {
         co(function *() {
           yield throttleBody(s);
         });
