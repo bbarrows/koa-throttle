@@ -1,6 +1,6 @@
 {
   "name": "koa-throttle",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Koa body response throttling by number of bytes per millisecond",
   "main": "index.js",
   "author": "Bradley Barrows",
