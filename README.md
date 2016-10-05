@@ -1,9 +1,12 @@
 # koa-throttle
-Using the Koa framework, throttle the body of a response by specifying the rate or delay and chunk size. 
+
+Using the Koa framework, throttle the body of a response by specifying the rate or delay and chunk size.
 
 ## Install
 
-
+```bash
+$ npm install koa-throttle --save
+```
 
 ## Usage
 
@@ -18,7 +21,7 @@ app
   .use(function *test(next){
     this.body = 'This is a big test string that will be throttled';
   });
-  
+
 
 app.listen(3000);
 ```
