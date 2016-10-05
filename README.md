@@ -30,12 +30,12 @@ app.listen(3000);
 * **debug**: If evalutes to true then a new line will be sent after each chunk of data written to the response so that you can see the data coming in if testing with curl. Default is false
 
 ## Testing
+
 Run:
-```cd test; node test.js```
+```cd test; npm install; node test.js```
 Then to see the data throttled flow in:
 ```
 curl http://localhost:3000/string
 curl http://localhost:3000/buffer
-curl http://localhost:3000/stream 
+curl http://localhost:3000/stream
 ```
-
