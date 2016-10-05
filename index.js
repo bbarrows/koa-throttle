@@ -1,19 +1,9 @@
-var Readable = require('stream').Readable
+var Readable = require('stream').Readable;
 var Stream = require('stream');
 var delay = require('koa-delay');
 var co = require('co');
 
-function streamToString(stream, cb) {
-  var all = [];
-  stream.on('data', function(c) {
-    all.push(c);
-  });
-  stream.on('end', function() {
-    cb(all.join(''));
-  });
-}
-
-module.exports = function (options) {
+module.exports = function(options) {
   options || (options = {});
 
   if (options.rate === undefined || !options.chunk === undefined) {
@@ -27,51 +17,82 @@ module.exports = function (options) {
   return function* throttler(next) {
     yield* next;
 
-    var that = this;
-    var originalBody = that.body;
+    var originalBody = this.body;
+    var destination = null;
 
-    function* throttleBody(originalBody) {
+    function newReadable() {
       // Create a new readable stream which I will write the existing
       // body to. Throttling the response at the specified rate
       var r = new Readable();
       r._read = function() { };
+      return r;
+    }
 
-      that.body = r;
-
-      var start = 0;
+    function* throttleString(str) {
       co(function* () {
+        var start = 0;
         do {
-          var part = originalBody.slice(start, start + options.chunk);
-          r.push(part);
+          var part = str.slice(start, start + options.chunk);
+          destination.push(part);
           // For debugging sending a new line will help as curl will show
           // the data coming over line by line
           if (options.debug) {
-            r.push("\n");
+            destination.push("\n");
           }
           start += options.chunk;
           yield delay(options.rate);
         } while (part.length);
-        r.push(null);
+        destination.push(null);
+      });
+    }
+
+    function* throttleBuffer(buffer) {
+      var start = 0;
+      var len = buffer.length;
+      while (start < len) {
+        var part = buffer.slice(start, start + options.chunk);
+        destination.push(part);
+        start += options.chunk;
+        yield delay(options.rate);
+      }
+      destination.push(null);
+    }
+
+    function* throttleStream(stream) {
+      co(function* () {
+        var buf;
+        stream.on('data', function(c) {
+          buf = buf ? Buffer.concat([buf, c], buf.length + c.length) : c;
+        });
+        yield function(done) {
+          stream.on('end', done);
+        };
+        if (buf) {
+          yield throttleBuffer(buf);
+        }
+        destination.push(null);
       });
     }
 
     if (originalBody instanceof Stream) {
-      streamToString(originalBody, function(s) {
-        co(function *() {
-          yield throttleBody(s);
-        });
-      });
+      // Only set body if required
+      this.body = destination = newReadable();
+      yield throttleStream(originalBody);
     } else if (Buffer.isBuffer(originalBody)) {
-      originalBody = originalBody.toString();
-      yield throttleBody(originalBody);
+      // Only set body if required
+      this.body = destination = newReadable();
+      co(function* () {
+        yield throttleBuffer(originalBody);
+      });
     } else if ('string' == typeof originalBody) {
-      yield throttleBody(originalBody);
+      // Only set body if required
+      this.body = destination = newReadable();
+      yield throttleString(originalBody);
     } else {
       // This should never happen as Koa's this.body should be either a string,
       // Buffer, or Stream
       // https://github.com/koajs/koa/blob/master/lib/application.js#L218
       return;
     }
-
   };
 };

@@ -1,6 +1,7 @@
-var Readable = require('stream').Readable
+var Readable = require('stream').Readable;
 var koa = require('koa');
 var route = require('koa-route');
+var serve = require('koa-static');
 var Throttler = require('../index');
 
 var app = koa();
@@ -20,7 +21,7 @@ app
     this.body = r;
     r.push(" BEFORE ");
     r.push(null);
-  }));
-  
+  }))
+  .use(route.get(/\/test\//, serve('.')));
 
 app.listen(3000);
