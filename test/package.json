@@ -7,6 +7,8 @@
   "license": "MIT",
   "dependencies": {
     "co": "^4.6.0",
-    "koa-route": "^2.4.2"
+    "koa": "^1.2.4",
+    "koa-route": "^2.4.2",
+    "koa-static": "^2.0.0"
   }
 }
